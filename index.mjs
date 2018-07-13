@@ -4,10 +4,8 @@
 //.
 //. Compile a standard Redux reducer from a brief definition.
 //.
-//. Works nicely with [Warped Components][1].
-//.
 //. Usage in Node depends on `--experimental-modules`.
-//. With older Node versions, use [std/esm][2].
+//. With older Node versions, use [`esm`][1].
 
 // createType :: (String, String) -> String
 export function createType(namespace, actionName) {
@@ -50,14 +48,22 @@ export function compileReducer(namespace, actions) {
 
 //. ## API
 //.
+//. ### Reducer Creation
+//.
 //# createReducer :: String -> StrMap (b -> a -> a) -> { types :: StrMap String, actions :: StrMap (b -> { type :: String, payload :: b }), reducer :: (a, b) -> a }
 //.
-//. Given a String representing the namespace, and a StrMap of curried and
-//. flipped reducers, returns a Record containing a single reducer, and a new
-//. StrMap mapping the original keys to canonical identifiers of the types that
-//. the reducer can handle.
+//. This is also the default export from this module.
 //.
-//. This is the default export from this module.
+//. Given a String representing the namespace, and a StrMap of action handlers,
+//. returns a Record containing a single reducer, and a new StrMap mapping the
+//. original keys to canonical identifiers of the types that the reducer can
+//. handle.
+//.
+//. An action handler is a curried function that takes the payload of the
+//. action first, and the state second, and should return a new state.
+//. We recommend usings Optics, such as the `lens`-related functions from
+//. [Ramda][2], to define the reducers - the signature of action handlers
+//. is designed to align perfectly with the signature of functional utilities.
 //.
 //. ```js
 //. const setMyProp = myProp => state => Object.assign ({}, state, {myProp});
@@ -93,5 +99,59 @@ export function noopAction(payload) {
   };
 }
 
-//. [1]: https://github.com/wearereasonablepeople/warped-components
-//. [2]: https://github.com/standard-things/esm
+//. ### Redux Utilities
+//.
+//. In most cases you'll use this library in conjunction with [React Redux][3]
+//. or [Redux][4], so we expose some basic utilities to ease this interaction.
+//.
+//# compileSelectors :: StrMap ((a, b) -> c) -> (a, b) -> StrMap c
+//.
+//. Given a mapping of selectors, returns a `mapStateToProps` function, as
+//. accepted by `connect` from React Redux.
+//.
+//. The selectors are given the state (and previous props), and are expected
+//. to return a slice of the state. We recommend usings Optics, such as the
+//. `lens`-related functions from [Ramda][2], to create the selectors.
+export function compileSelectors(selectors) {
+  return function mapStateToProps(state, prevProps) {
+    const props = Object.create (null);
+    Object.entries (selectors).forEach (function(entry) {
+      props[entry[0]] = entry[1] (state, prevProps);
+    });
+    return props;
+  };
+}
+
+//# compileDispatchers :: StrMap (a -> b) -> (b -> c) -> StrMap (a -> c)
+//.
+//. Given a mapping of action creators, as returned from
+//. [createReducer](#createReducer), returns a `mapDispatchToProps` function,
+//. as accepted by `connect` from React Redux.
+export function compileDispatchers(actions) {
+  return function mapDispatchToProps(dispatch) {
+    const props = Object.create (null);
+    Object.entries (actions).forEach (function(entry) {
+      props[entry[0]] = function dispatchAction(payload) {
+        return dispatch (entry[1] (payload));
+      };
+    });
+    return props;
+  };
+}
+
+//# combineReducers :: Array ((a, b) -> a) -> (a, b) -> a
+//.
+//. Given an array of reducers, returns a single reducer which transforms the
+//. state by calling all reducers in sequence.
+export function combineReducers(reducers) {
+  return function rootReducer(rootState, action) {
+    return reducers.reduce (function reduceReducers(state, reducer) {
+      return reducer (state, action);
+    }, rootState);
+  };
+}
+
+//. [1]: https://github.com/standard-things/esm
+//. [2]: http://ramdajs.com/
+//. [3]: https://github.com/reactjs/react-redux
+//. [4]: http://redux.js.org/

@@ -3,11 +3,14 @@ import show from 'sanctuary-show';
 import Z from 'sanctuary-type-classes';
 
 import {
-  createType,
-  compileActionTypes,
-  compileReducer,
-  createReducer,
+  combineReducers,
   compileActionCreators,
+  compileActionTypes,
+  compileDispatchers,
+  compileReducer,
+  compileSelectors,
+  createReducer,
+  createType,
   noopAction
 } from '..';
 
@@ -19,10 +22,32 @@ function eq(actual) {
   };
 }
 
+function mockAction(payload) {
+  return {type: 'MOCK', payload: payload};
+}
+
+function mockDispatch(payload) {
+  return {dispatched: payload};
+}
+
 function mockHandler(payload) {
   return function(state) {
     return Object.assign ({}, state, {actionPayload: payload});
   };
+}
+
+function mockReducer(state, action) {
+  return Object.assign ({}, state, {lastAction: action.type});
+}
+
+function mockReducerCount(state, action) {
+  return action.type === 'MOCK' ?
+         Object.assign ({}, state, {count: state.count + 1}) :
+         state;
+}
+
+function mockSelector(state) {
+  return String (state.count);
 }
 
 test ('createType', function() {
@@ -64,4 +89,30 @@ test ('createReducer', function() {
 
 test ('noopAction', function() {
   eq (noopAction (null) ({foo: 'bar'})) ({foo: 'bar'});
+});
+
+test ('compileSelectors', function() {
+  var mapState = compileSelectors ({test: mockSelector});
+  eq (typeof mapState) ('function');
+  eq (mapState ({count: 42})) ({test: '42'});
+});
+
+test ('compileDispatchers', function() {
+  var mapDispatch = compileDispatchers ({test: mockAction});
+  eq (typeof mapDispatch) ('function');
+  var dispatchers = mapDispatch (mockDispatch);
+  eq (typeof dispatchers) ('object');
+  eq (typeof dispatchers.test) ('function');
+  eq (dispatchers.test (42)) ({dispatched: {type: 'MOCK', payload: 42}});
+});
+
+test ('combineReducers', function() {
+  var zeroReducers = combineReducers ([]);
+  var oneReducer = combineReducers ([mockReducer]);
+  var twoReducers = combineReducers ([mockReducer, mockReducerCount]);
+
+  eq (zeroReducers ({}, mockAction (42))) ({});
+  eq (oneReducer ({}, mockAction (42))) ({lastAction: 'MOCK'});
+  eq (twoReducers ({count: 1}, mockAction (42)))
+     ({lastAction: 'MOCK', count: 2});
 });
