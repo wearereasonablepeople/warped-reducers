@@ -4,28 +4,32 @@
 
 Compile a standard Redux reducer from a brief definition.
 
-Works nicely with [Warped Components][1].
-
 Usage in Node depends on `--experimental-modules`.
-With older Node versions, use [std/esm][2].
+With older Node versions, use [`esm`][1].
 
 ## API
 
-#### <a name="createReducer" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.0/index.mjs#L53">`createReducer :: String -⁠> StrMap (b -⁠> a -⁠> a) -⁠> { types :: StrMap String, actions :: StrMap (b -⁠> { type :: String, payload :: b }), reducer :: (a, b) -⁠> a }`</a>
+#### <a name="createReducer" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.1/index.mjs#L51">`createReducer :: String -⁠> StrMap (b -⁠> a -⁠> a) -⁠> { types :: StrMap String, actions :: StrMap (b -⁠> { type :: String, payload :: b }), reducer :: (a, b) -⁠> a }`</a>
 
-Given a String representing the namespace, and a StrMap of curried and
-flipped reducers, returns a Record containing a single reducer, and a new
-StrMap mapping the original keys to canonical identifiers of the types that
-the reducer can handle.
+This is also the default export from this module.
 
-This is the default export from this module.
+Given a String representing the namespace, and a StrMap of action handlers,
+returns a Record containing a single reducer, and a new StrMap mapping the
+original keys to canonical identifiers of the types that the reducer can
+handle.
+
+An action handler is a curried function that takes the payload of the
+action first, and the state second, and should return a new state.
+We recommend usings Optics, such as the `lens`-related functions from
+[Ramda][2], to define the reducers - the signature of action handlers
+is designed to align perfectly with the signature of functional utilities.
 
 ```js
 const setMyProp = myProp => state => Object.assign ({}, state, {myProp});
 createReducer ('MyNamespace') ({setMyProp});
 ```
 
-#### <a name="noopAction" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.0/index.mjs#L78">`noopAction :: a -⁠> b -⁠> b`</a>
+#### <a name="noopAction" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.1/index.mjs#L82">`noopAction :: a -⁠> b -⁠> b`</a>
 
 A conviently named function that does nothing to your state.
 
@@ -38,5 +42,5 @@ middleware.
 {myState: 'whatever'}
 ```
 
-[1]: https://github.com/wearereasonablepeople/warped-components
-[2]: https://github.com/standard-things/esm
+[1]: https://github.com/standard-things/esm
+[2]: http://ramdajs.com/

@@ -1,6 +1,6 @@
 {
   "name": "warped-reducers",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Compile a standard Redux reducer from a brief definition",
   "main": "index.mjs",
   "module": "index.mjs",
