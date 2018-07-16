@@ -3,11 +3,11 @@ import show from 'sanctuary-show';
 import Z from 'sanctuary-type-classes';
 
 import {
-  createType,
+  compileActionCreators,
   compileActionTypes,
   compileReducer,
   createReducer,
-  compileActionCreators,
+  createType,
   noopAction
 } from '..';
 
