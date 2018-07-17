@@ -2,7 +2,7 @@
   "name": "warped-reducers",
   "version": "1.0.2",
   "description": "Compile a standard Redux reducer from a brief definition",
-  "main": "index.js",
+  "main": "index",
   "module": "index.mjs",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
