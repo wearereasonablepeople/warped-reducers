@@ -2,12 +2,14 @@
   "name": "warped-reducers",
   "version": "1.0.1",
   "description": "Compile a standard Redux reducer from a brief definition",
-  "main": "index.mjs",
+  "main": "index.js",
   "module": "index.mjs",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "doctest": "sanctuary-doctest",
     "lint": "sanctuary-lint",
+    "prepare": "rollup -f umd --output.exports named --output.name warpedReducers -o index.js index.mjs",
+    "pretest": "rm -f index.js",
     "release": "sanctuary-release",
     "test": "npm run lint && sanctuary-test && npm run doctest"
   },
@@ -16,6 +18,7 @@
     "url": "git://github.com/wearereasonablepeople/warped-reducers.git"
   },
   "files": [
+    "/index.js",
     "/index.mjs",
     "/LICENSE",
     "/package.json",
@@ -28,6 +31,7 @@
     "coveralls": "^3.0.2",
     "esm": "^3.0.66",
     "nyc": "^12.0.2",
+    "rollup": "^0.62.0",
     "sanctuary-scripts": "^2.0.0",
     "sanctuary-show": "^1.0.0",
     "sanctuary-type-classes": "^9.0.0"
