@@ -9,7 +9,7 @@ With older Node versions, use [`esm`][1].
 
 ## API
 
-#### <a name="createReducer" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.1/index.mjs#L51">`createReducer :: String -⁠> StrMap (b -⁠> a -⁠> a) -⁠> { types :: StrMap String, actions :: StrMap (b -⁠> { type :: String, payload :: b }), reducer :: (a, b) -⁠> a }`</a>
+#### <a name="createReducer" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.2/index.mjs#L51">`createReducer :: String -⁠> StrMap (b -⁠> a -⁠> a) -⁠> { types :: StrMap String, actions :: StrMap (b -⁠> { type :: String, payload :: b }), reducer :: (a, b) -⁠> a }`</a>
 
 This is also the default export from this module.
 
@@ -29,7 +29,7 @@ const setMyProp = myProp => state => Object.assign ({}, state, {myProp});
 createReducer ('MyNamespace') ({setMyProp});
 ```
 
-#### <a name="noopAction" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.1/index.mjs#L82">`noopAction :: a -⁠> b -⁠> b`</a>
+#### <a name="noopAction" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.2/index.mjs#L82">`noopAction :: a -⁠> b -⁠> b`</a>
 
 A conviently named function that does nothing to your state.
 
