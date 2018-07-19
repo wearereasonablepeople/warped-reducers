@@ -1,6 +1,7 @@
 //. # Warped Reducers
 //.
 //. [![Build Status](https://travis-ci.com/wearereasonablepeople/warped-reducers.svg?branch=master)](https://travis-ci.com/wearereasonablepeople/warped-reducers)
+//. [![Greenkeeper Enabled](https://badges.greenkeeper.io/wearereasonablepeople/warped-reducers.svg)](https://greenkeeper.io/)
 //.
 //. Compile a standard Redux reducer from a brief definition.
 //.
