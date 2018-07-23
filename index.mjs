@@ -16,7 +16,7 @@ export function createType(namespace, actionName) {
 // compileActionTypes :: (String, StrMap Any) -> StrMap String
 export function compileActionTypes(namespace, actions) {
   var actionTypes = Object.create (null);
-  Object.keys (actions).forEach (key => {
+  Object.keys (actions).forEach (function(key) {
     actionTypes[key] = createType (namespace, key);
   });
   return actionTypes;
@@ -25,7 +25,7 @@ export function compileActionTypes(namespace, actions) {
 // compileActionTypes :: StrMap String
 //                    -> StrMap (a -> { type :: String, payload :: a })
 export function compileActionCreators(types) {
-  const creators = Object.create (null);
+  var creators = Object.create (null);
   Object.entries (types).forEach (function(entry) {
     creators[entry[0]] = function(payload) {
       return {type: entry[1], payload: payload};
@@ -36,7 +36,7 @@ export function compileActionCreators(types) {
 
 // compileReducer :: (String, StrMap b -> a -> a) -> (a, b) -> a
 export function compileReducer(namespace, actions) {
-  const handlers = Object.create (null);
+  var handlers = Object.create (null);
   Object.entries (actions).forEach (function(entry) {
     handlers[createType (namespace, entry[0])] = entry[1];
   });
