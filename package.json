@@ -8,7 +8,7 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "doctest": "sanctuary-doctest",
     "lint": "sanctuary-lint",
-    "prepublishOnly": "rollup -f umd --output.exports named --output.name warpedReducers -o index.js index.mjs",
+    "prepublishOnly": "rollup -c rollup.config.mjs",
     "pretest": "rm -f index.js",
     "release": "sanctuary-release",
     "test": "npm run lint && sanctuary-test && npm run doctest"
@@ -28,10 +28,14 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
     "coveralls": "^3.0.2",
     "esm": "^3.0.66",
     "nyc": "^12.0.2",
     "rollup": "^0.63.2",
+    "rollup-plugin-babel": "^3.0.7",
     "sanctuary-scripts": "^2.0.0",
     "sanctuary-show": "^1.0.0",
     "sanctuary-type-classes": "^9.0.0"
