@@ -29,7 +29,7 @@
   "dependencies": {},
   "devDependencies": {
     "coveralls": "^3.0.2",
-    "esm": "^3.0.66",
+    "esm": "^3.0.74",
     "nyc": "^12.0.2",
     "rollup": "^0.63.2",
     "sanctuary-scripts": "^2.0.0",
