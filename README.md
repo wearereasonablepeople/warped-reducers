@@ -8,6 +8,12 @@ Compile a standard Redux reducer from a brief definition.
 Usage in Node depends on `--experimental-modules`.
 With older Node versions, use [`esm`][1].
 
+## Installation
+
+```bash
+npm install warped-reducers --save
+```
+
 ## API
 
 #### <a name="createReducer" href="https://github.com/wearereasonablepeople/warped-reducers/blob/v1.0.5/index.mjs#L52">`createReducer :: String -⁠> StrMap (b -⁠> a -⁠> a) -⁠> { types :: StrMap String, actions :: StrMap (b -⁠> { type :: String, payload :: b }), reducer :: (a, b) -⁠> a }`</a>
