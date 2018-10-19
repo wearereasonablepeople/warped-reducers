@@ -82,7 +82,7 @@ export function createReducer(namespace) {
 
 //# noopAction :: a -> b -> b
 //.
-//. A conviently named function that does nothing to your state.
+//. A conveniently named function that does nothing to your state.
 //.
 //. To be used when you need to define an action type which should not affect
 //. the state, but can be used as a message to your Redux side-effect handling
