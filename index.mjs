@@ -53,7 +53,7 @@ export function compileReducer(namespace, actions) {
 
 //. ## API
 //.
-//# createReducer :: String -> StrMap (b -> a -> a) -> { handlers :: StrMap { types :: StrMap String, actions :: StrMap (b -> { type :: String, payload :: b })}, reducer :: (a, b) -> a }
+//# createReducer :: String -> StrMap (b -> a -> a) -> { handlers :: StrMap { type :: String, action :: (b -> { type :: String, payload :: b })}, reducer :: (a, b) -> a }
 //.
 //. This is also the default export from this module.
 //.
@@ -91,7 +91,7 @@ export function createReducer(namespace) {
   };
 }
 
-//# getActions :: StrMap { type :: string, action :: (a -> { type :: String, payload :: a })} -> Array (a -> { type :: String, payload :: a })
+//# getActions :: StrMap { action :: a } -> Array a
 //.
 //. Extracts action creators from a handlers object as returned from
 //. createReducer
@@ -105,7 +105,7 @@ export function getActions(handlers) {
 }
 
 
-//# getTypes :: StrMap { type :: string, action :: (a -> { type :: String, payload :: a })} -> Array string)
+//# getTypes :: StrMap { type :: String } -> Array String
 //.
 //. Extracts types from a handlers object
 //.
