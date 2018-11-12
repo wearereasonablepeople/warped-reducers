@@ -135,6 +135,30 @@ export function noopAction(payload) {
   };
 }
 
+//. ## Typescript
+//. 
+//. The typings for this library include the `PayloadsOf<T>` utility type to
+//. help extract the payloads of a `handlers` object:
+//. 
+//. ```tsx
+//. interface State {
+//.   myString: string,
+//.   myNumber: number,
+//. }
+//. 
+//. const {handlers} = createReducer <State>('MyNamespace') ({
+//.   setMyString: (myString: string) => state =>
+//.     Object.assign ({}, state, {myString}),
+//.   setMyNumber: (myNumber: number) => state =>
+//.     Object.assign ({}, state, {myNumber}),
+//.   // side effect action that requires a specific payload
+//.   getUser: noopAction as ActionHandler<{username: string}, State>
+//. });
+//. 
+//. // type Payloads = string | number | {username: string}
+//. type Payloads = PayloadsOf<typeof handlers>;
+//. ```
+
 //. [1]: https://github.com/standard-things/esm
 //. [2]: https://github.com/redux-utilities/flux-standard-action
 //. [3]: http://ramdajs.com/
