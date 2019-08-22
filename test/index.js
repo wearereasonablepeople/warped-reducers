@@ -8,6 +8,8 @@ import {
   compileReducer,
   createReducer,
   createType,
+  getTypes,
+  getActions,
   noopAction
 } from '..';
 
@@ -56,10 +58,25 @@ test ('createReducer', function() {
   var result = createReducer ('Test') ({foo: mockHandler});
   eq (typeof result) ('object');
   eq (typeof result.reducer) ('function');
-  eq (typeof result.types) ('object');
+  eq (typeof result.handlers) ('object');
   eq (result.reducer ({}, {type: 'Warped/Test/foo', payload: 'test'}))
      ({actionPayload: 'test'});
-  eq (result.types) ({foo: 'Warped/Test/foo'});
+  eq (result.handlers.foo.type) ('Warped/Test/foo');
+});
+
+test ('getTypes', function() {
+  var reducerReturn = createReducer ('Test') ({foo: mockHandler});
+  var result = getTypes (reducerReturn.handlers);
+  eq (typeof result) ('object');
+  eq (result.foo) ('Warped/Test/foo');
+});
+
+test ('getActions', function() {
+  var reducerReturn = createReducer ('Test') ({foo: mockHandler});
+  var result = getActions (reducerReturn.handlers);
+  eq (typeof result) ('object');
+  eq (typeof result.foo) ('function');
+  eq (result.foo ('test')) ({type: 'Warped/Test/foo', payload: 'test'});
 });
 
 test ('noopAction', function() {

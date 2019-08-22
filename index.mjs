@@ -22,14 +22,18 @@ export function compileActionTypes(namespace, actions) {
   return actionTypes;
 }
 
+function createActionCreator(type) {
+  return function(payload) {
+    return {type: type, payload: payload};
+  };
+}
+
 // compileActionTypes :: StrMap String
 //                    -> StrMap (a -> { type :: String, payload :: a })
 export function compileActionCreators(types) {
   var creators = Object.create (null);
   Object.entries (types).forEach (function(entry) {
-    creators[entry[0]] = function(payload) {
-      return {type: entry[1], payload: payload};
-    };
+    creators[entry[0]] = createActionCreator (entry[1]);
   });
   return creators;
 }
@@ -49,19 +53,20 @@ export function compileReducer(namespace, actions) {
 
 //. ## API
 //.
-//# createReducer :: String -> StrMap (b -> a -> a) -> { types :: StrMap String, actions :: StrMap (b -> { type :: String, payload :: b }), reducer :: (a, b) -> a }
+//# createReducer :: String -> StrMap (b -> a -> a) -> { handlers :: StrMap { type :: String, action :: (b -> { type :: String, payload :: b })}, reducer :: (a, b) -> a }
 //.
 //. This is also the default export from this module.
 //.
 //. Given a String representing the namespace, and a StrMap of action handlers,
 //. returns a Record containing a single reducer, and a new StrMap mapping the
 //. original keys to canonical identifiers of the types that the reducer can
-//. handle.
+//. handle along with action creator functions that build [flux standard action
+//. objects][2] for those actions.
 //.
 //. An action handler is a curried function that takes the payload of the
 //. action first, and the state second, and should return a new state.
 //. We recommend usings Optics, such as the `lens`-related functions from
-//. [Ramda][2], to define the reducers - the signature of action handlers
+//. [Ramda][3], to define the reducers - the signature of action handlers
 //. is designed to align perfectly with the signature of functional utilities.
 //.
 //. ```js
@@ -71,18 +76,50 @@ export function compileReducer(namespace, actions) {
 export default createReducer;
 export function createReducer(namespace) {
   return function(actions) {
-    var types = compileActionTypes (namespace, actions);
+    var handlers = Object.create (null);
+    Object.entries (actions).forEach (function(entry) {
+      var type = createType (namespace, entry[0]);
+      handlers[entry[0]] = {
+        type: type,
+        action: createActionCreator (type)
+      };
+    });
     return {
-      types: types,
-      actions: compileActionCreators (types),
+      handlers: handlers,
       reducer: compileReducer (namespace, actions)
     };
   };
 }
 
+//# getActions :: StrMap { action :: a } -> Array a
+//.
+//. Extracts action creators from a handlers object as returned from
+//. createReducer
+//.
+export function getActions(handlers) {
+  var actions = Object.create (null);
+  Object.entries (handlers).forEach (function(entry) {
+    return actions[entry[0]] = entry[1].action;
+  });
+  return actions;
+}
+
+
+//# getTypes :: StrMap { type :: String } -> Array String
+//.
+//. Extracts types from a handlers object
+//.
+export function getTypes(handlers) {
+  var types = Object.create (null);
+  Object.entries (handlers).forEach (function(entry) {
+    return types[entry[0]] = entry[1].type;
+  });
+  return types;
+}
+
 //# noopAction :: a -> b -> b
 //.
-//. A conviently named function that does nothing to your state.
+//. A conveniently named function that does nothing to your state.
 //.
 //. To be used when you need to define an action type which should not affect
 //. the state, but can be used as a message to your Redux side-effect handling
@@ -98,5 +135,30 @@ export function noopAction(payload) {
   };
 }
 
+//. ## Typescript
+//. 
+//. The typings for this library include the `PayloadsOf<T>` utility type to
+//. help extract the payloads of a `handlers` object:
+//. 
+//. ```tsx
+//. interface State {
+//.   myString: string,
+//.   myNumber: number,
+//. }
+//. 
+//. const {handlers} = createReducer <State>('MyNamespace') ({
+//.   setMyString: (myString: string) => state =>
+//.     Object.assign ({}, state, {myString}),
+//.   setMyNumber: (myNumber: number) => state =>
+//.     Object.assign ({}, state, {myNumber}),
+//.   // side effect action that requires a specific payload
+//.   getUser: noopAction as ActionHandler<{username: string}, State>
+//. });
+//. 
+//. // type Payloads = string | number | {username: string}
+//. type Payloads = PayloadsOf<typeof handlers>;
+//. ```
+
 //. [1]: https://github.com/standard-things/esm
-//. [2]: http://ramdajs.com/
+//. [2]: https://github.com/redux-utilities/flux-standard-action
+//. [3]: http://ramdajs.com/

@@ -4,6 +4,7 @@
   "description": "Compile a standard Redux reducer from a brief definition",
   "main": "index",
   "module": "index.mjs",
+  "types": "index.d.ts",
   "scripts": {
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "doctest": "sanctuary-doctest",
@@ -22,7 +23,8 @@
     "/index.mjs",
     "/LICENSE",
     "/package.json",
-    "/README.md"
+    "/README.md",
+    "/index.d.ts"
   ],
   "author": "Aldwin Vlasblom <aldwin.vlasblom@gmail.com> (https://github.com/Avaq)",
   "license": "MIT",
