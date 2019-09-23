@@ -22,8 +22,8 @@ export function compileActionTypes(namespace, actions) {
   return actionTypes;
 }
 
-// compileActionTypes :: StrMap String
-//                    -> StrMap (a -> { type :: String, payload :: a })
+// compileActionCreators :: StrMap String
+//                       -> StrMap (a -> { type :: String, payload :: a })
 export function compileActionCreators(types) {
   var creators = Object.create (null);
   Object.entries (types).forEach (function(entry) {
@@ -34,7 +34,8 @@ export function compileActionCreators(types) {
   return creators;
 }
 
-// compileReducer :: (String, StrMap b -> a -> a) -> (a, b) -> a
+// compileReducer :: (String, StrMap b -> a -> a)
+//                -> (a, { type :: String, payload :: b }) -> a
 export function compileReducer(namespace, actions) {
   var handlers = Object.create (null);
   Object.entries (actions).forEach (function(entry) {
